@@ -1,13 +1,14 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import CoreData from "./CoreData/CoreData";
+import CoreData from "./coredata/coredata";
 
 const StyledMain = styled.main`
-  min-height: calc(100vh - 10rem);
+  min-height: calc(100vh - 8rem);
   margin: 2rem;
-  border: 1px solid #dfdfdf;
+  margin-bottom: 1rem;
+  border: 1px solid #afafaf;
   border-radius: 15px;
-  box-shadow: -3px 3px 6px 2px #dfdfdf;
+  box-shadow: -3px 3px 6px 2px #afafaf;
 `;
 
 const TypeSelectorStrip = styled.div`
@@ -16,7 +17,7 @@ const TypeSelectorStrip = styled.div`
   background-color: #ff1c1c;
   text-align: center;
   font-size: 1.3rem;
-  border: 1.5px solid #dfdfdf;
+  border: 1.5px solid #afafaf;
   border-radius: 15px 15px 0 0;
   position: relative;
 `;
@@ -48,9 +49,9 @@ const TypeSelectionLabel = styled.label`
 `;
 
 const Main = () => {
-  const [pokeData, setPokeData] = useState([]);
   const [pokeTypes, setPokeTypes] = useState([]);
   const [currType, setCurrType] = useState(null);
+
   useEffect(() => {
     fetch("http://localhost:3030/getPokeTypes")
       .then((res) => {
@@ -74,6 +75,7 @@ const Main = () => {
       })
       .catch((e) => console.log(e));
   }, []);
+
   return (
     <StyledMain>
       <TypeSelectorStrip>

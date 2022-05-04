@@ -1,4 +1,4 @@
-import styles from "./Pokeball.module.css";
+import styles from "./pokeball.module.css";
 
 const Pokeball = () => {
   return (
