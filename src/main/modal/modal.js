@@ -48,6 +48,7 @@ const Image = styled.div`
   background-size: contain;
   background-repeat: no-repeat;
   margin-left: 20%;
+  filter: saturate(1.8);
 `;
 
 const Name = styled.div`

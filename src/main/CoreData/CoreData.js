@@ -74,6 +74,7 @@ const CoreData = (props) => {
   const getNewPokemonData = (newPage) => {
     //Fetch pokemon data from server.
     const coreDisplayDataArray = [];
+
     if (props.currType) {
       fetch(
         `${process.env.REACT_APP_API_URL}getPokeData/${props.currType}?start=${
@@ -81,6 +82,7 @@ const CoreData = (props) => {
         }&count=${10}`
       )
         .then((res) => {
+          window.scrollTo({ top: 0, behavior: "smooth" }); //Scroll to top of page when new pokemon data is loaded.
           if (res.ok) {
             return res.json();
           } else {
