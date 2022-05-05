@@ -33,7 +33,7 @@ const StatContainer = styled.div`
   padding: 0 3rem;
   text-align: center;
   align-content: space-between;
-  font-size: 2rem;
+  font-size: 1.5rem;
 `;
 
 const Image = styled.div`

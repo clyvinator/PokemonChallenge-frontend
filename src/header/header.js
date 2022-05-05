@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Pokeball from "./pokeball/pokeball.js";
+import Pokeball from "./pokeball/pokeball";
 
 const StyledHeader = styled.header`
   width: 100%;
