@@ -1,6 +1,9 @@
+/*Fetches and displays pokemon data*/
+
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Pagination from "../pagination/pagination";
+import Modal from "../modal/modal";
 
 const PokemonContainer = styled.div`
   display: flex;
@@ -27,13 +30,6 @@ const Pokemon = styled.div`
   transition: box-shadow 0.2s ease;
 `;
 
-const StatContainer = styled.div`
-  margin-top: 0.8rem;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-`;
-
 const Stat = styled.div`
   text-align: center;
   margin-top: 0.2rem;
@@ -41,8 +37,8 @@ const Stat = styled.div`
 
 const StatId = styled.div`
   position: absolute;
-  left: 0.3rem;
-  top: 0.3rem;
+  left: 0.5rem;
+  top: 0.5rem;
 `;
 
 const PokeName = styled(Stat)`
@@ -51,34 +47,36 @@ const PokeName = styled(Stat)`
 `;
 
 const PokeThumb = styled.div`
-  transform: translate(50%, 0);
+  margin-left: 20%;
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
   background-image: url(${(props) =>
-    "http://localhost:3030/thumb/" +
+    process.env.REACT_APP_API_URL +
+    "thumb/" +
     String(props.pokeId).padStart(3, "0") +
     ".png"});
-  width: 50%;
-  height: 50%;
+  width: 60%;
+  height: 60%;
   margin-bottom: 0.5rem;
   filter: saturate(1.8);
-`;
-
-const PowerStat = styled(Stat)`
-  display: inline-block;
-  flex-basis: 50%;
+  ${Pokemon}:hover & {
+    transform: scale(1.2);
+  }
+  transition: transform 0.2s ease;
 `;
 
 const CoreData = (props) => {
   const [coreDisplayData, setCoreDisplayData] = useState({});
   const [page, setPage] = useState(1);
-  const coreDisplayDataArray = [];
+  const [modal, setModal] = useState({ display: false });
 
   const getNewPokemonData = (newPage) => {
+    //Fetch pokemon data from server.
+    const coreDisplayDataArray = [];
     if (props.currType) {
       fetch(
-        `http://localhost:3030/getPokeData/${props.currType}?start=${
+        `${process.env.REACT_APP_API_URL}getPokeData/${props.currType}?start=${
           (newPage - 1) * 10
         }&count=${10}`
       )
@@ -97,8 +95,25 @@ const CoreData = (props) => {
             res.data.pokemonList instanceof Array
           ) {
             for (let i = 0; i < res.data.pokemonList.length; i++) {
+              //Push fetched data to array and store it in state for render.
               coreDisplayDataArray.push(
-                <Pokemon key={res.data.pokemonList[i].id}>
+                <Pokemon
+                  key={res.data.pokemonList[i].id}
+                  onClick={() =>
+                    setModal({
+                      display: true,
+                      data: {
+                        name: res.data.pokemonList[i].name.english,
+                        id: res.data.pokemonList[i].id,
+                        types: res.data.pokemonList[i].type,
+                        hp: res.data.pokemonList[i].base.HP,
+                        attack: res.data.pokemonList[i].base.Attack,
+                        defense: res.data.pokemonList[i].base.Defense,
+                        speed: res.data.pokemonList[i].base.Speed,
+                      },
+                    })
+                  }
+                >
                   <StatId>{res.data.pokemonList[i].id}</StatId>
                   <PokeThumb pokeId={res.data.pokemonList[i].id}></PokeThumb>
                   <PokeName>{res.data.pokemonList[i].name.english}</PokeName>
@@ -108,21 +123,6 @@ const CoreData = (props) => {
                       <span key={e}>{(i === 0 ? "" : ", ") + e}</span>
                     ))}
                   </Stat>
-
-                  <StatContainer>
-                    <PowerStat>
-                      HP:{" " + res.data.pokemonList[i].base.HP}
-                    </PowerStat>
-                    <PowerStat>
-                      Attack:{" " + res.data.pokemonList[i].base.Attack}
-                    </PowerStat>
-                    <PowerStat>
-                      Defense:{" " + res.data.pokemonList[i].base.Defense}
-                    </PowerStat>
-                    <PowerStat>
-                      Speed:{" " + res.data.pokemonList[i].base.Speed}
-                    </PowerStat>
-                  </StatContainer>
                 </Pokemon>
               );
             }
@@ -138,14 +138,16 @@ const CoreData = (props) => {
     }
   };
   useEffect(() => {
+    //Fetch new pokemon data on type change.
     getNewPokemonData(1);
-    setPage(1);
+    setPage(1); //Reset page number to first page if type changes.
   }, [props.currType]);
 
-  const handlePageChange = (e) => {
-    if (e.target.value !== page) {
-      getNewPokemonData(e.target.value);
-      setPage(e.target.value);
+  const handlePageChange = (n) => {
+    //If current page number not same as clicked page number, change page.
+    if (n !== page) {
+      getNewPokemonData(n);
+      setPage(Number(n));
     }
   };
 
@@ -157,6 +159,10 @@ const CoreData = (props) => {
         handlePageChange={handlePageChange}
         maxCount={coreDisplayData.maxCount}
       ></Pagination>
+      <Modal
+        modal={modal}
+        closeModal={() => setModal({ display: false })}
+      ></Modal>
     </>
   );
 };

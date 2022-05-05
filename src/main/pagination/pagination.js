@@ -35,15 +35,20 @@ const PageNumber = styled.button`
   text-align: center;
 `;
 
+const Forward = styled(PageNumber)``;
+const Backward = styled(PageNumber)``;
+
 const Pagination = ({ maxCount, page, handlePageChange }) => {
   const pageNumbers = [];
+
   for (let i = 0; i < Math.ceil(maxCount / 10.0); i++) {
     pageNumbers.push(
       <PageNumber
+        //Individual page number buttons
         active={Number(page) === i + 1 ? true : false}
         value={i + 1}
         key={Date.now() + i}
-        onClick={handlePageChange}
+        onClick={(e) => handlePageChange(e.target.value)}
       >
         {i + 1}
       </PageNumber>
@@ -51,7 +56,30 @@ const Pagination = ({ maxCount, page, handlePageChange }) => {
   }
   return (
     <PaginationContainer>
-      <PaginactionControls>{pageNumbers}</PaginactionControls>
+      <PaginactionControls>
+        <Backward
+          onClick={(e) => {
+            if (page - 1 > 0) {
+              //Checks for page bounds before changing page
+              handlePageChange(page - 1);
+            }
+          }}
+        >
+          {"<"}
+        </Backward>
+        {pageNumbers}
+
+        <Forward
+          onClick={(e) => {
+            if (page < Math.ceil(maxCount / 10.0)) {
+              //Checks for page bounds before changing page
+              handlePageChange(page + 1);
+            }
+          }}
+        >
+          {">"}
+        </Forward>
+      </PaginactionControls>
     </PaginationContainer>
   );
 };

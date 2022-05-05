@@ -1,4 +1,5 @@
 import styled from "styled-components";
+
 const StyledFooter = styled.div`
   text-align: center;
   margin: 1rem;
@@ -12,5 +13,5 @@ const Footer = () => {
     </StyledFooter>
   );
 };
-//height 2rem
+
 export default Footer;

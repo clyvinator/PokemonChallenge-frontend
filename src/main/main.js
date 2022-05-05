@@ -1,3 +1,5 @@
+/*Main data container*/
+
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import CoreData from "./coredata/coredata";
@@ -53,7 +55,8 @@ const Main = () => {
   const [currType, setCurrType] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3030/getPokeTypes")
+    //Get list of pokemon types. Only execute on initial load.
+    fetch(process.env.REACT_APP_API_URL + "getPokeTypes")
       .then((res) => {
         if (res.ok) return res.json();
         else {
